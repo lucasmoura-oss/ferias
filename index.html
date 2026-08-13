@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alteração de Férias &middot; Guia Operacional CGP</title>
+<style>
+  :root{
+    /* Paleta institucional */
+    --ink:#12261c;            /* verde-tinta escuro */
+    --paper:#f5f3ec;          /* papel */
+    --card:#ffffff;
+    --line:#dcd8cb;           /* linhas */
+    --ifsp:#0f7c47;           /* verde IFSP */
+    --ifsp-d:#0a5a33;
+    /* Cores por ator (padrão do setor) */
+    --cgp:#6d4bd6;            /* roxo  = CGP */
+    --chefia:#0f7c47;        /* verde = chefia */
+    --serv:#1f6fd6;          /* azul  = servidor/TAE */
+    --dec:#c9820a;           /* âmbar = decisão */
+    --dec-bg:#fdf3dd;
+    --block:#b03636;         /* bloqueio/atenção forte */
+    --block-bg:#fbe9e7;
+    --term:#0c120d;          /* "tela preta" do SIAPE */
+    --term-fg:#7ef0a6;
+    --muted:#5d6b60;
+    --shadow:0 1px 2px rgba(18,38,28,.06),0 8px 24px rgba(18,38,28,.06);
+    --radius:14px;
+    --mono:"Cascadia Code","Consolas","SF Mono",ui-monospace,Menlo,monospace;
+    --sans:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--paper);
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:22px 18px 80px}
+
+  /* Cabeçalho */
+  header.app{
+    display:flex;align-items:flex-start;gap:16px;justify-content:space-between;
+    border-bottom:2px solid var(--ifsp);padding-bottom:16px;margin-bottom:22px;flex-wrap:wrap;
+  }
+  .brand{display:flex;gap:14px;align-items:center}
+  .mark{
+    width:44px;height:44px;border-radius:10px;flex:0 0 auto;
+    background:conic-gradient(from 210deg,var(--ifsp),#7ac142 60%,var(--ifsp));
+    box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 4px var(--line);
+  }
+  h1{font-size:1.42rem;margin:0;letter-spacing:-.01em;line-height:1.15}
+  .sub{color:var(--muted);font-size:.92rem;margin-top:2px}
+  .hubbtn{
+    display:none;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:.86rem;
+    color:#fff;background:var(--ifsp);padding:9px 14px;border-radius:999px;box-shadow:var(--shadow);
+  }
+  .hubbtn:hover{background:var(--ifsp-d)}
+
+  /* Legenda de atores */
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:-4px 0 22px;font-size:.8rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:900px){.grid{grid-template-columns:0.92fr 1.08fr}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card>.hd{
+    padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
+    font-weight:700;font-size:.98rem
+  }
+  .card>.bd{padding:16px 18px}
+  .eyebrow{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+  /* Formulário */
+  label{display:block;font-size:.82rem;font-weight:600;margin:0 0 5px;color:#33463b}
+  .field{margin-bottom:14px}
+  input[type=text],input[type=date],input[type=number],select{
+    width:100%;font:inherit;font-size:.92rem;padding:9px 11px;border:1px solid var(--line);
+    border-radius:9px;background:#fff;color:var(--ink)
+  }
+  input:focus,select:focus{outline:2px solid var(--ifsp);outline-offset:1px;border-color:var(--ifsp)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{
+    font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid var(--line);
+    background:#fff;color:#33463b;padding:8px 12px;border-radius:999px
+  }
+  .seg button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .hint{font-size:.76rem;color:var(--muted);margin-top:4px}
+
+  /* Parcelas */
+  fieldset.parcela{border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;margin:0 0 12px}
+  fieldset.parcela legend{font-size:.82rem;font-weight:700;padding:0 8px;color:var(--ink)}
+  fieldset.parcela.off{opacity:.5}
+  .miniflag{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .btn{
+    font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;border:none;border-radius:10px;
+    padding:10px 16px;background:var(--ifsp);color:#fff;box-shadow:var(--shadow)
+  }
+  .btn:hover{background:var(--ifsp-d)}
+  .btn.ghost{background:#fff;color:#33463b;border:1px solid var(--line);box-shadow:none}
+  .btn.ghost:hover{background:#f2f0e8}
+
+  /* Diagnóstico */
+  #diag .placeholder{color:var(--muted);font-size:.9rem;padding:8px 2px}
+  .verdict{border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid}
+  .verdict h3{margin:0 0 4px;font-size:1.05rem;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .verdict p{margin:6px 0 0;font-size:.9rem}
+  .tag{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;color:#fff}
+  .v-prog{background:#eef4f0;border-color:#cfe3d6}   .v-prog .tag{background:var(--chefia)}
+  .v-alt{background:#eef3fb;border-color:#cfe0f5}     .v-alt .tag{background:var(--serv)}
+  .v-canc{background:var(--dec-bg);border-color:#f0dcae} .v-canc .tag{background:var(--dec)}
+  .v-hist{background:#f2eefb;border-color:#ddd0f5}    .v-hist .tag{background:var(--cgp)}
+
+  .flags{display:flex;flex-direction:column;gap:8px;margin:12px 0 2px}
+  .flag{display:flex;gap:10px;font-size:.85rem;padding:10px 12px;border-radius:10px;border:1px solid}
+  .flag.warn{background:var(--dec-bg);border-color:#f0dcae}
+  .flag.stop{background:var(--block-bg);border-color:#f0cdc7}
+  .flag.info{background:#eef4f0;border-color:#cfe3d6}
+  .flag b{font-weight:800}
+  .flag .ic{flex:0 0 auto;font-weight:900}
+
+  /* comando estilo terminal */
+  code.cmd{
+    font-family:var(--mono);font-size:.86em;background:var(--term);color:var(--term-fg);
+    padding:2px 8px;border-radius:6px;white-space:nowrap;letter-spacing:.02em
+  }
+  code.k{font-family:var(--mono);background:#eae6da;color:#33463b;padding:1px 6px;border-radius:5px;font-size:.86em}
+
+  /* Fluxograma */
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 4px 2px}
+  .node{
+    position:relative;background:#fff;border:1.5px solid var(--line);border-radius:12px;
+    padding:11px 14px;max-width:520px;width:100%;text-align:center;font-size:.86rem;font-weight:600;
+    transition:.18s
+  }
+  .node .lbl{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;display:block;margin-bottom:2px}
+  .node.dec{border-color:var(--dec);background:linear-gradient(#fffdf7,#fdf3dd)}
+  .node.term{border-style:dashed}
+  .node.on{border-width:2.5px;box-shadow:0 0 0 4px rgba(15,124,71,.12);transform:translateZ(0)}
+  .node.on.dec{box-shadow:0 0 0 4px rgba(201,130,10,.16)}
+  .node.dim{opacity:.4}
+  .conn{width:2px;height:16px;background:var(--line)}
+  .conn.on{background:var(--ifsp);width:3px}
+  .branch{display:flex;gap:14px;width:100%;justify-content:center;flex-wrap:wrap;align-items:stretch}
+  .lane{display:flex;flex-direction:column;align-items:center;flex:1;min-width:150px;max-width:250px}
+  .edge{font-size:.68rem;font-weight:800;color:var(--muted);background:var(--paper);padding:1px 8px;border-radius:999px;border:1px solid var(--line);margin:2px 0}
+  .edge.on{color:#fff;background:var(--ifsp);border-color:var(--ifsp)}
+  .n-prog.on{border-color:var(--chefia)!important}
+  .n-alt.on{border-color:var(--serv)!important}
+  .n-canc.on{border-color:var(--dec)!important}
+  .n-hist.on{border-color:var(--cgp)!important}
+
+  /* Passo a passo (acordeão) */
+  details.step{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff;overflow:hidden}
+  details.step>summary{
+    cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;font-size:.92rem;
+    display:flex;align-items:center;gap:10px
+  }
+  details.step>summary::-webkit-details-marker{display:none}
+  details.step>summary::after{content:"+";margin-left:auto;font-weight:800;color:var(--muted);font-size:1.1rem}
+  details.step[open]>summary::after{content:"\2013"}
+  details.step[open]>summary{border-bottom:1px solid var(--line)}
+  details.step.hl>summary{background:linear-gradient(#fff,#f4fbf6)}
+  .pill{font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;padding:2px 8px;border-radius:999px}
+  .p-cgp{background:var(--cgp)} .p-serv{background:var(--serv)} .p-chefia{background:var(--chefia)} .p-dec{background:var(--dec)}
+  .stbody{padding:6px 18px 16px}
+  ol.steps{margin:6px 0 0;padding-left:20px}
+  ol.steps li{margin:7px 0;font-size:.89rem}
+  .stbody p{font-size:.86rem;color:#38463c}
+  .callout{border-left:3px solid var(--dec);background:var(--dec-bg);padding:9px 12px;border-radius:0 8px 8px 0;font-size:.83rem;margin:10px 0}
+  .callout.serv{border-color:var(--serv);background:#eef3fb}
+
+  /* Calculadora adicional */
+  .calc .out{font-family:var(--mono);font-size:1.15rem;font-weight:700;color:var(--ifsp-d);margin-top:4px}
+  .calc small{color:var(--muted)}
+
+  footer.app{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem;text-align:center}
+  footer.app a{color:var(--ifsp-d)}
+
+  /* Impressão / PDF */
+  @media print{
+    body{background:#fff}
+    .noprint{display:none!important}
+    .card{box-shadow:none;break-inside:avoid}
+    details.step{break-inside:avoid}
+    details.step[data-print="open"]>.stbody{display:block!important}
+    .grid{grid-template-columns:1fr}
+    .node.dim{opacity:.55}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div>
+        <h1>Alteração de Férias</h1>
+        <div class="sub">Guia operacional CGP &middot; IFSP Câmpus Salto &middot; base: Manual de Férias Intempestivas (mar/2023)</div>
+      </div>
+    </div>
+    <a class="hubbtn" id="hubBtn" target="_top" href="#">&#8962; Painel CGP</a>
+  </header>
+
+  <div class="legend" aria-label="Legenda de atores">
+    <span><i class="dot" style="background:var(--cgp)"></i> CGP</span>
+    <span><i class="dot" style="background:var(--chefia)"></i> Chefia</span>
+    <span><i class="dot" style="background:var(--serv)"></i> Servidor</span>
+    <span><i class="dot" style="background:var(--dec)"></i> Decisão / atenção</span>
+  </div>
+
+  <div class="grid">
+
+    <!-- ================= COLUNA 1 : ENTRADA ================= -->
+    <section class="card">
+      <div class="hd">&#9997;&#65039; Dados do requerimento</div>
+      <div class="bd">
+
+        <div class="row">
+          <div class="field"><label for="matricula">Matrícula SIAPE</label><input type="text" id="matricula" inputmode="numeric"></div>
+          <div class="field"><label for="exercicio">Férias do exercício (ano)</label><input type="number" id="exercicio" min="2000" max="2099" step="1"></div>
+        </div>
+        <div class="field"><label for="nome">Nome do servidor</label><input type="text" id="nome"></div>
+
+        <div class="field">
+          <label>Tipo de servidor <span class="hint" style="font-weight:400">(define dias de férias e cálculo do adicional)</span></label>
+          <div class="seg" id="tipo" role="group" aria-label="Tipo de servidor">
+            <button type="button" data-v="docente" aria-pressed="false">Docente &middot; 45 dias &middot; 1/2</button>
+            <button type="button" data-v="tae" aria-pressed="false">Adm. (TAE) &middot; 30 dias &middot; 1/3</button>
+            <button type="button" data-v="contratado" aria-pressed="false">Contratado &middot; 30 dias &middot; 1/3</button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="folha">Folha em aberto (mês da folha atual)</label>
+            <input type="month" id="folha">
+            <div class="hint">É a folha cuja data-limite ainda não fechou. Define se a parcela está no passado, no mês atual ou no futuro.</div>
+          </div>
+          <div class="field">
+            <label>Já existem férias cadastradas neste exercício?</label>
+            <div class="seg" id="existem" role="group">
+              <button type="button" data-v="sim" aria-pressed="false">Sim</button>
+              <button type="button" data-v="nao" aria-pressed="false">Não</button>
+            </div>
+            <div class="hint">Se &ldquo;Não&rdquo;, o caminho é <b>Programação</b>, não alteração.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Houve licença capacitação ou afastamento p/ qualificação neste ano?</label>
+          <div class="seg" id="afast" role="group">
+            <button type="button" data-v="nao" aria-pressed="false">Não</button>
+            <button type="button" data-v="sim" aria-pressed="false">Sim</button>
+          </div>
+          <div class="hint">Se &ldquo;Sim&rdquo;, <b>acúmulo de férias não é permitido</b> nesse ano. Conferir em SUAP &rsaquo; Ocorrências/Afastamentos.</div>
+        </div>
+
+        <div class="eyebrow" style="margin:18px 0 8px">Parcelas &middot; situação atual &rarr; nova</div>
+
+        <div id="parcelas"><!-- gerado por JS --></div>
+
+        <div class="toolbar noprint">
+          <button class="btn" id="btnDiag">Analisar e gerar fluxo</button>
+          <button class="btn ghost" id="btnExemplo">Carregar exemplo (Rubens)</button>
+          <button class="btn ghost" id="btnLimpar">Limpar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COLUNA 2 : SAÍDA ================= -->
+    <section class="card">
+      <div class="hd">&#129517; Diagnóstico &amp; caminho</div>
+      <div class="bd">
+        <div id="diag"><div class="placeholder">Preencha as parcelas e clique em <b>Analisar e gerar fluxo</b>. O caminho correto (Programação, Alteração, Cancelamento ou Histórica) aparece aqui, com os avisos do manual.</div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= FLUXOGRAMA ================= -->
+  <section class="card" style="margin-top:18px">
+    <div class="hd">&#128506;&#65039; Fluxograma de decisão <span class="hint" style="font-weight:400;margin-left:auto">o caminho ativo acende após a análise</span></div>
+    <div class="bd">
+      <div class="flow" id="flow">
+        <div class="node" id="fx-start"><span class="lbl">Início</span>Requerimento de alteração recebido (SouGov indisponível)</div>
+        <div class="conn" id="c-start"></div>
+        <div class="node dec" id="fx-q1"><span class="lbl">Decisão</span>Já existem férias cadastradas para o exercício?</div>
+
+        <div class="branch" style="margin-top:6px">
+          <div class="lane">
+            <span class="edge" id="e-nao">Não</span>
+            <div class="conn"></div>
+            <div class="node n-prog" id="fx-prog"><span class="lbl">Tela preta</span>Programação<br><code class="cmd">&gt;CAIFFERIAS</code></div>
+          </div>
+          <div class="lane" style="max-width:none;flex:2 1 420px">
+            <span class="edge" id="e-sim">Sim</span>
+            <div class="conn"></div>
+            <div class="node dec" id="fx-q2"><span class="lbl">Decisão</span>Onde inicia a parcela a alterar, em relação à folha em aberto?</div>
+            <div class="branch" style="margin-top:6px">
+              <div class="lane">
+                <span class="edge" id="e-fut">Folha futura</span>
+                <div class="conn"></div>
+                <div class="node n-alt" id="fx-alt-f"><span class="lbl">e-Siape</span>Alteração<br><code class="cmd">CAPRFERIAS</code></div>
+              </div>
+              <div class="lane">
+                <span class="edge" id="e-mes">Mesmo mês</span>
+                <div class="conn"></div>
+                <div class="node dec" id="fx-q3" style="font-size:.8rem"><span class="lbl">Decisão</span>Muda a qtd de dias OU joga p/ folha futura?</div>
+                <div class="branch" style="margin-top:6px">
+                  <div class="lane" style="min-width:110px">
+                    <span class="edge" id="e-m-nao">Não</span>
+                    <div class="conn"></div>
+                    <div class="node n-alt" id="fx-alt-m" style="font-size:.78rem"><code class="cmd">CAPRFERIAS</code></div>
+                  </div>
+                  <div class="lane" style="min-width:110px">
+                    <span class="edge" id="e-m-sim">Sim</span>
+                    <div class="conn"></div>
+                    <div class="node n-canc" id="fx-canc" style="font-size:.78rem"><span class="lbl">Tela preta</span><code class="cmd">&gt;CACAFERIAS</code> + CAPRFERIAS</div>
+                  </div>
+                </div>
+              </div>
+              <div class="lane">
+                <span class="edge" id="e-ant">Folha anterior</span>
+                <div class="conn"></div>
+                <div class="node n-hist" id="fx-hist"><span class="lbl">SUAP + Siape</span>Alteração Histórica<br><span style="font-weight:500;font-size:.78rem">libera 2 folhas após o último evento</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="conn" id="c-fim" style="margin-top:6px"></div>
+        <div class="node term" id="fx-add"><span class="lbl">Sempre, ao final</span>Conferir adicional de 1/3 em <code class="k">&gt;FPCLPAGTO</code> &middot; se não pago &rarr; lançamento manual <code class="k">&gt;FPATMOVFIN</code></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PASSO A PASSO ================= -->
+  <section class="card" style="margin-top:18px">
+    <div class="hd">&#9989; Passo a passo <span class="hint" style="font-weight:400;margin-left:auto">o procedimento indicado abre destacado</span></div>
+    <div class="bd">
+
+      <details class="step" id="st-prog">
+        <summary><span class="pill p-chefia">Programação</span> Programar férias &mdash; <code class="cmd">&gt;CAIFFERIAS</code> (tela preta)</summary>
+        <div class="stbody">
+          <p>Use quando <b>ainda não há férias</b> cadastradas para o exercício. Também é o caminho da vacância TAE &rarr; docente (45 dias no ano da vacância).</p>
+          <ol class="steps">
+            <li>COMANDO: <code class="cmd">&gt;CAIFFERIAS</code> &rarr; <code class="k">Enter</code>.</li>
+            <li>Identifique o servidor &rarr; marque <code class="k">X</code> no resultado &rarr; <code class="k">Enter</code>.</li>
+            <li>Mais de uma matrícula? Escolha a que <b>não</b> tenha info em <code class="k">[OCORR. EXC]</code>.</li>
+            <li><b>ANO DE EXERCÍCIO DAS FÉRIAS</b> &rarr; <code class="k">Enter</code>. Se aparecer &ldquo;JÁ EXISTEM FÉRIAS...&rdquo;, pare: o caminho é <b>Alteração</b>.</li>
+            <li><b>QTDE PARCELAS</b> conforme o requerimento.</li>
+            <li><b>PERÍODO AQUISITIVO</b>: não alterar &rarr; <code class="k">Enter</code>.</li>
+            <li><b>DATA INÍCIO</b> / <b>QTDE DE DIAS BRUTO</b> da parcela.</li>
+            <li><b>ADIANT. GRAT. NATALINA</b> (S/N &mdash; só &ldquo;S&rdquo; se a parcela iniciar entre jan e maio).</li>
+            <li><b>ADIANT. SALARIAL</b> (S/N) e <b>MESES DESCONTO</b>: <code class="k">1</code> se salarial = S; deixe <b>vazio</b> se = N &rarr; <code class="k">Enter</code>. Repita 7&ndash;9 por parcela.</li>
+            <li><b>CONFIRMA FÉRIAS?</b> <code class="k">S</code> &rarr; <b>NOTIFICAÇÃO?</b> <code class="k">N</code> &rarr; <code class="k">Enter</code>.</li>
+          </ol>
+          <div class="callout">Parcela iniciando no ano seguinte = <b>acúmulo</b>: preencha a justificativa (&ldquo;Acúmulo devido ao serviço e autorizado pela chefia imediata&rdquo;) e <code class="k">S</code> em &ldquo;DESEJA CONTINUAR&rdquo;.</div>
+        </div>
+      </details>
+
+      <details class="step" id="st-alt">
+        <summary><span class="pill p-serv">Alteração</span> Alterar férias &mdash; <code class="cmd">CAPRFERIAS</code> (e-Siape)</summary>
+        <div class="stbody">
+          <p>Use quando as férias <b>já existem</b> e a parcela a mudar inicia em <b>folha futura</b> (ou no mês da folha em aberto, sem mudar dias).</p>
+          <ol class="steps">
+            <li>Lupa &rarr; digite <code class="cmd">CAPRFERIAS</code> &rarr; <code class="k">Enter</code>.</li>
+            <li>Identifique o servidor &rarr; clique no nome. Mais de uma matrícula? A sem info em <code class="k">[OCORR. EXC AFAS]</code>.</li>
+            <li>Selecione o <b>Exercício</b>.
+              <div class="callout serv">&ldquo;EXISTE SOLICITAÇÃO EM ABERTO NA WEB&rdquo; &rarr; <code class="k">[ENTER] CONTINUAR</code> (isso <b>invalida</b> o pedido feito pelo servidor na web).<br>&ldquo;ESTAS FÉRIAS JÁ ESTÃO QUITADAS...&rdquo; &rarr; <code class="k">[ENTER] CONTINUAR</code>, mas vira <b>histórica</b>: exige também o lançamento no SUAP.</div>
+            </li>
+            <li><b>Quantidade de parcelas</b> &rarr; <code class="k">Enter</code>.</li>
+            <li><b>Data início</b> (avance até a parcela certa &mdash; ex.: a 3ª) e <b>Qtd de dias brutos</b>.
+              <div class="callout"><b>Obs.1:</b> se a parcela inicia <b>dentro do mês da folha em aberto</b>, o sistema só aceita nova data no mesmo mês e <b>não</b> deixa mudar a qtd de dias &rarr; use <b>Cancelamento</b>.<br><b>Obs.2:</b> se inicia em <b>folha anterior</b>, só permite em data futura (correção histórica) &rarr; use <b>Alteração Histórica</b>.</div>
+            </li>
+            <li><b>Adiant. grat. natalina</b> (S/N), <b>Adiant. salarial</b> (S/N), <b>Meses desconto</b> (<code class="k">1</code> se S; vazio se N). Repita por parcela.</li>
+            <li><b>CONFIRMA REPROGRAMAÇÃO?</b> <code class="k">Sim</code> &rarr; <b>NOTIFICAÇÃO?</b> <code class="k">Não</code>.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="step" id="st-canc">
+        <summary><span class="pill p-dec">Cancelamento</span> Cancelar parcela &mdash; <code class="cmd">&gt;CACAFERIAS</code> (tela preta)</summary>
+        <div class="stbody">
+          <p>Use quando a parcela inicia <b>no mês da folha em aberto</b> e você precisa <b>mudar a qtd de dias</b> ou <b>jogar para uma folha futura</b>. Depois traga de volta pelo <code class="cmd">CAPRFERIAS</code>.</p>
+          <ol class="steps">
+            <li><code class="cmd">&gt;CACAFERIAS</code> &rarr; <code class="k">Enter</code> &rarr; identifique &rarr; <code class="k">X</code> &rarr; <code class="k">Enter</code> (matrícula sem <code class="k">[OCORR. EXC AFAS]</code>).</li>
+            <li>Confira <b>PERÍODO DE FÉRIAS DA PARCELA</b> (parcela correta).</li>
+            <li><b>DATA INÍCIO PROGRAMADA P/ GOZO DA PARCELA CANCELADA</b>: o sistema não aceita data no mês/folha atual &rarr; ponha uma data qualquer em <b>folha próxima</b> (depois corrige via CAPRFERIAS).</li>
+            <li><code class="k">F2</code> para iniciar o <b>DL</b> (Documento Legal). No requerimento localize nº e sigla do setor.</li>
+            <li><b>UORG</b>: <code class="k">F1</code> em SIGLA A PARTIR DE &rarr; sigla &rarr; <code class="k">Enter</code> &rarr; <code class="k">X</code> &rarr; <code class="k">Enter</code>.</li>
+            <li><b>ANO</b> e <b>NÚMERO</b> do requerimento &middot; <b>TIPO</b> = <code class="k">8</code> &middot; <b>ASSUNTO</b> = <code class="k">232</code>.</li>
+            <li><b>EMISSÃO / VIGÊNCIA / PUBLICAÇÃO</b>: 1 dia antes da data atual OU 1 dia antes do início da parcela cancelada &mdash; a <b>mais antiga</b> das duas.</li>
+            <li><code class="k">F4</code> &rarr; <b>CONFIRMA INCLUSÃO?</b> <code class="k">S</code> &rarr; <code class="k">Enter</code> &rarr; <b>CONFIRMAR CANCELAMENTO?</b> <code class="k">S</code> &rarr; <code class="k">Enter</code> &rarr; NOTIFICAÇÃO? <code class="k">Não</code>.</li>
+          </ol>
+          <div class="callout">Erros <code class="k">(4825) DATA MENOR QUE CORRENTE</code> ou <code class="k">DATA GOZO &gt; ANO/MÊS PGTO</code> &rarr; use data em folha próxima. Se não conseguir reajustar depois, desfaça em <code class="cmd">&gt;CAANCANFER</code>.</div>
+          <div class="callout" style="border-color:var(--block);background:var(--block-bg)">Rode <code class="k">FPCLPAGO</code>: se houve <b>desconto de férias</b>, avise o servidor. Se o desconto <b>negativar a folha</b>, comunique com urgência a DACP-DGP: <b>dacp.prd@ifsp.edu.br</b>.</div>
+        </div>
+      </details>
+
+      <details class="step" id="st-hist">
+        <summary><span class="pill p-cgp">Histórica</span> Alteração histórica / continuação de interrupção &mdash; SUAP + Siape</summary>
+        <div class="stbody">
+          <p>Cai aqui quando <b>CAPRFERIAS/CACAFERIAS não liberam</b>: parcela em folha anterior, férias já quitadas, ou registro de interrupção. Regra do prazo: o Siape <b>só libera a alteração 2 folhas após o último evento</b> &mdash; o fim das férias inicialmente agendadas <b>ou</b> a nova data final, o que for mais recente.</p>
+
+          <div class="eyebrow" style="margin:14px 0 6px">Parte 1 &middot; SUAP &mdash; <span style="color:var(--cgp)">fazer agora</span></div>
+          <p>O extrator não traz alteração histórica nem interrupção, então o registro no SUAP é <b>manual e imediato</b> &mdash; não espera a data do Siape.</p>
+          <ol class="steps">
+            <li>SUAP &rarr; <b>Gestão de Pessoas</b> &rarr; Administração de Pessoal &rarr; Férias &rarr; <b>Listagem de Férias</b>.</li>
+            <li>Filtrar: <b>Texto</b> = nome &middot; <b>ano</b> = exercício &middot; <b>Campus</b> = clicar no <code class="k">X</code> (Todos) &middot; <b>Subsetores</b> = clicar no <code class="k">X</code> (Todos) &rarr; <b>Filtrar</b>.</li>
+            <li>No resultado, clique no ícone de <b>editar</b> (lápis).</li>
+            <li>Nos campos <b>Data de Início / Fim do Período 1, 2, 3</b>: informe as parcelas <b>como serão de fato usufruídas</b> (a distribuição final e correta).</li>
+            <li><b>Desmarque</b> a caixa <code class="k">Atualizar pelo Extrator?</code> &mdash; se ficar marcada, o extrator sobrescreve o seu lançamento.</li>
+            <li><b>Só em interrupção:</b> no bloco <b>Interrupções de Férias</b>, preencha <b>Data de Interrupção do Período</b>, <b>Data de Início da Continuação</b> e <b>Data Fim da Continuação</b>. Use <b>&ldquo;Adicionar outra(s) interrupção&rdquo;</b> se houver mais de uma.</li>
+            <li><b>Salvar</b>.</li>
+          </ol>
+
+          <div class="eyebrow" style="margin:16px 0 6px">Parte 2 &middot; Siape &mdash; <span style="color:var(--serv)">conforme o caso</span></div>
+
+          <p style="margin-bottom:4px"><b>a) Alteração histórica</b> (caso mais comum &mdash; parcela em folha passada / &ldquo;já quitada&rdquo;):</p>
+          <ol class="steps">
+            <li><b>Aguarde a data de liberação</b> &mdash; 2 folhas após o último evento (veja a data calculada no diagnóstico, ao lado). Antes disso o sistema recusa; é esperado, não force.</li>
+            <li>No e-Siape, entre em <code class="cmd">CAPRFERIAS</code> normalmente (mesmos passos da Alteração).</li>
+            <li>Ao selecionar o exercício aparece <b>&ldquo;ESTAS FÉRIAS JÁ ESTÃO QUITADAS. SERÁ PERMITIDA A REPROGRAMAÇÃO APENAS PARA EFEITO CADASTRAL...&rdquo;</b> &rarr; <code class="k">[ENTER] CONTINUAR</code>. Confirma que a mudança é <b>só cadastral, sem reflexo na folha</b> (CACOFERPAG).</li>
+            <li>Reprograme as datas/dias <b>exatamente como você registrou no SUAP</b> &rarr; <b>CONFIRMA REPROGRAMAÇÃO?</b> <code class="k">Sim</code> &rarr; NOTIFICAÇÃO? <code class="k">Não</code>.</li>
+            <li>Confira em <code class="cmd">CACOFERIAS</code> se a marcação histórica ficou correta.</li>
+          </ol>
+
+          <p style="margin:12px 0 4px"><b>b) Interrupção de férias:</b> aí o Siape vem <b>antes</b> do SUAP, pelo comando <code class="cmd">&gt;CAITFERIAS</code> &mdash; veja o passo <b>&ldquo;Interromper férias&rdquo;</b> logo abaixo. Depois volte à Parte 1 e lance a interrupção + a continuação no SUAP.</p>
+        </div>
+      </details>
+
+      <details class="step" id="st-int">
+        <summary><span class="pill p-cgp">Interrupção</span> Interromper férias &mdash; <code class="cmd">&gt;CAITFERIAS</code> (tela preta)</summary>
+        <div class="stbody">
+          <p>Só a partir do <b>2&ordm; dia de usufruto</b> e nas hipóteses do <b>art. 80 da Lei 8.112/90</b> (calamidade pública, comoção interna, júri, serviço militar/eleitoral, ou necessidade do serviço declarada pela autoridade máxima). O requerimento precisa estar assinado por <b>servidor, chefia imediata e Reitor</b> (a do Reitor pode ser por despacho do processo). Depois dos registros, o processo segue para <b>arquivo e AFD</b>.</p>
+          <ol class="steps">
+            <li><code class="cmd">&gt;CAITFERIAS</code> &rarr; <code class="k">Enter</code> &rarr; identifique o servidor &rarr; <code class="k">X</code> &rarr; <code class="k">Enter</code> (matrícula sem <code class="k">[OCORR. EXC AFAS]</code>).</li>
+            <li>Selecione com <code class="k">X</code> o <b>ano</b> das férias a interromper &rarr; <code class="k">Enter</code>.</li>
+            <li>Selecione com <code class="k">X</code> a <b>parcela</b> a interromper &rarr; <code class="k">Enter</code>.</li>
+            <li><b>DATA INTERRUPÇÃO</b>: a data indicada no requerimento.</li>
+            <li><code class="k">F2</code> para iniciar o <b>DL</b>. No requerimento localize nº, sigla do setor e data.</li>
+            <li><b>UORG</b>: <code class="k">F1</code> em SIGLA A PARTIR DE &rarr; sigla &rarr; <code class="k">Enter</code> &rarr; <code class="k">X</code> &rarr; <code class="k">Enter</code>.</li>
+            <li><b>ANO</b> / <b>NÚMERO</b> do requerimento &middot; <b>TIPO</b> = <code class="k">8</code> &middot; <b>ASSUNTO</b> = <code class="k">107</code> <span class="hint" style="font-weight:400">(interrupção usa 107; cancelamento usa 232)</span>.</li>
+            <li><b>EMISSÃO / VIGÊNCIA / PUBLICAÇÃO</b>: a <b>data do requerimento</b>.</li>
+            <li>DL preenchido &rarr; <code class="k">F4</code>, <code class="k">F3</code>, <code class="k">Enter</code>, <code class="k">Enter</code>, <code class="k">X</code>, <code class="k">Enter</code>, <code class="k">Enter</code>.</li>
+            <li><b>DATA INÍCIO PROGRAMADA PARA OS XX DIAS RESTANTES</b>: a data (do requerimento) para gozar o restante <b>de uma só vez</b> &rarr; <code class="k">Enter</code>.</li>
+            <li><b>CONFIRMA INTERRUPÇÃO?</b> <code class="k">S</code> &rarr; <code class="k">Enter</code> &rarr; <code class="k">Enter</code>.</li>
+            <li><b>DESEJA FINALIZAR O DL?</b> <code class="k">N</code> &rarr; <code class="k">Enter</code> para finalizar.</li>
+          </ol>
+          <div class="callout">Pelo art. 77, o restante do período é gozado <b>de uma só vez</b>. Depois do Siape, <b>registre a interrupção e a continuação no SUAP</b> (Parte 1 do passo Histórica) &mdash; o extrator não traz essa informação.</div>
+        </div>
+      </details>
+
+      <details class="step" id="st-add">
+        <summary><span class="pill p-cgp">Adicional</span> Lançar 1/3 manual &mdash; <code class="cmd">&gt;FPATMOVFIN</code></summary>
+        <div class="stbody">
+          <p>O adicional é devido <b>só no 1º período</b>, independentemente dos dias. Em cadastro intempestivo o sistema pode não pagar automático &rarr; confira em <code class="cmd">&gt;FPCLPAGTO</code>.</p>
+          <ol class="steps">
+            <li><code class="cmd">&gt;FPATMOVFIN</code> &rarr; identifique o servidor.</li>
+            <li>Rubrica <b><span id="add-rub">00220</span></b> &middot; Operação <code class="k">I - INCLUSÃO</code> &middot; Parametrizada.</li>
+            <li><b>MÊS/ANO REF</b> = mês do 1º período &middot; <b>Valor</b> = adicional calculado abaixo.</li>
+            <li>Assunto de cálculo <code class="k">44</code> &middot; Doc. legal <code class="k">LEI 8112</code> &middot; justificativa (ex.: &ldquo;1/3 de férias referente ao 1º período do exercício... marcação intempestiva/histórica&rdquo;).</li>
+          </ol>
+          <div class="callout"><b>Rubrica:</b> <code class="k">00220</code> (efetivos) &middot; <code class="k">00750</code> (contratados). 1º período em <b>ano anterior</b> &rarr; processo de exercício anterior, <b>objeto 0069</b>.</div>
+
+          <div class="calc" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:12px">
+            <div class="eyebrow" style="margin-bottom:8px">Calculadora do adicional</div>
+            <div class="row3">
+              <div class="field" style="margin-bottom:8px"><label for="cVB">Base 1 (VB)</label><input type="number" id="cVB" step="0.01" placeholder="0,00"></div>
+              <div class="field" style="margin-bottom:8px"><label for="cIQ" id="lblIQ">Base 2 (IQ/RT)</label><input type="number" id="cIQ" step="0.01" placeholder="0,00"></div>
+              <div class="field" style="margin-bottom:8px"><label for="cCD">Base 3 (CD/FG)</label><input type="number" id="cCD" step="0.01" placeholder="0,00"></div>
+            </div>
+            <div>Divisor: <b id="cDiv">3</b> <small id="cDivWhy">(1/3 &mdash; 30 dias)</small></div>
+            <div class="out" id="cOut">R$ 0,00</div>
+            <small>Docente = &divide; 2 (1/2); Adm./contratado = &divide; 3 (1/3). Some as rubricas que compõem a remuneração.</small>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <footer class="app noprint">
+    Ferramenta de apoio &mdash; sempre confirmar contra o manual vigente e a legislação. Dúvidas de cadastro: CCP-DGP (ccp@ifsp.edu.br) &middot; efeitos financeiros: CPP-DGP.
+    <button class="btn ghost" style="margin-left:10px" id="btnPrint">Imprimir / PDF</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Configuração de embed (Google Sites / painel-cgp-salto) */
+  var HUB_URL = ""; /* preencher com a URL do painel-cgp-salto para exibir o botão */
+  (function(){ var b=document.getElementById("hubBtn"); if(HUB_URL){ b.href=HUB_URL; b.style.display="inline-flex"; } })();
+
+  var STORE_KEY = "cgp_alteracao_ferias_v1";
+  var NPARC = 3;
+  var state = {};
+
+  /* ---------- util ---------- */
+  function $(id){ return document.getElementById(id); }
+  function daysBetween(a,b){
+    if(!a||!b) return null;
+    var d1=new Date(a+"T00:00:00"), d2=new Date(b+"T00:00:00");
+    if(isNaN(d1)||isNaN(d2)) return null;
+    return Math.round((d2-d1)/86400000)+1; /* inclusivo */
+  }
+  function addMonths(ym6, n){ /* ym6 = YYYYMM number -> "MM/AAAA" com n meses somados */
+    if(ym6==null) return null;
+    var y=Math.floor(ym6/100), m=(ym6%100)+n;
+    while(m>12){m-=12;y++;} while(m<1){m+=12;y--;}
+    return (m<10?"0":"")+m+"/"+y;
+  }
+  function ym(dateStr){ /* "YYYY-MM-DD" -> comparable YYYYMM number */
+    if(!dateStr) return null;
+    var p=dateStr.split("-"); if(p.length<2) return null;
+    return parseInt(p[0],10)*100+parseInt(p[1],10);
+  }
+  function ymFromMonth(m){ if(!m) return null; var p=m.split("-"); return parseInt(p[0],10)*100+parseInt(p[1],10); }
+  function yearOf(dateStr){ if(!dateStr) return null; return parseInt(dateStr.split("-")[0],10); }
+  function money(n){ return "R$ "+ (Number(n)||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  /* ---------- render das parcelas ---------- */
+  function buildParcelas(){
+    var host=$("parcelas"); host.innerHTML="";
+    for(var i=1;i<=NPARC;i++){
+      var fs=document.createElement("fieldset");
+      fs.className="parcela"; fs.id="p"+i;
+      fs.innerHTML =
+        '<legend>'+i+'&ordf; parcela <span class="miniflag" id="flag'+i+'"></span></legend>'+
+        '<div class="row">'+
+          '<div class="field" style="margin-bottom:8px"><label>Início atual</label><input type="date" data-p="'+i+'" data-f="iniA"></div>'+
+          '<div class="field" style="margin-bottom:8px"><label>Fim atual <span class="hint" id="dA'+i+'" style="font-weight:400"></span></label><input type="date" data-p="'+i+'" data-f="fimA"></div>'+
+        '</div>'+
+        '<div class="row">'+
+          '<div class="field" style="margin-bottom:8px"><label>Início novo</label><input type="date" data-p="'+i+'" data-f="iniN"></div>'+
+          '<div class="field" style="margin-bottom:8px"><label>Fim novo <span class="hint" id="dN'+i+'" style="font-weight:400"></span></label><input type="date" data-p="'+i+'" data-f="fimN"></div>'+
+        '</div>';
+      host.appendChild(fs);
+    }
+    host.addEventListener("input", onInput);
+  }
+
+  function onInput(e){
+    var t=e.target, p=t.getAttribute("data-p"), f=t.getAttribute("data-f");
+    if(!p) return;
+    state["p"+p+"_"+f]=t.value;
+    updateDayHints(p);
+    save();
+  }
+
+  function updateDayHints(i){
+    var dA=daysBetween(state["p"+i+"_iniA"],state["p"+i+"_fimA"]);
+    var dN=daysBetween(state["p"+i+"_iniN"],state["p"+i+"_fimN"]);
+    $("dA"+i).textContent = dA?("&middot; "+dA+" dias").replace("&middot;","·"):"";
+    $("dN"+i).textContent = dN?("· "+dN+" dias"):"";
+    var fs=$("p"+i);
+    var any = state["p"+i+"_iniA"]||state["p"+i+"_fimA"]||state["p"+i+"_iniN"]||state["p"+i+"_fimN"];
+    fs.classList.toggle("off", !any);
+  }
+
+  /* ---------- segmented controls ---------- */
+  function bindSeg(groupId, key){
+    var g=$(groupId);
+    g.addEventListener("click", function(e){
+      var b=e.target.closest("button"); if(!b) return;
+      [].forEach.call(g.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true");
+      state[key]=b.getAttribute("data-v");
+      save();
+      if(key==="tipo") refreshCalcLabels();
+    });
+  }
+  function setSeg(groupId,val){
+    var g=$(groupId); if(!g) return;
+    [].forEach.call(g.querySelectorAll("button"), function(x){
+      x.setAttribute("aria-pressed", x.getAttribute("data-v")===val ? "true":"false");
+    });
+  }
+
+  /* ---------- persistência ---------- */
+  function save(){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function load(){
+    try{
+      var raw=localStorage.getItem(STORE_KEY);
+      if(raw) state=JSON.parse(raw)||{};
+    }catch(e){ state={}; }
+  }
+  function applyState(){
+    $("matricula").value=state.matricula||"";
+    $("nome").value=state.nome||"";
+    $("exercicio").value=state.exercicio||"";
+    $("folha").value=state.folha||"";
+    setSeg("tipo",state.tipo); setSeg("existem",state.existem); setSeg("afast",state.afast);
+    for(var i=1;i<=NPARC;i++){
+      ["iniA","fimA","iniN","fimN"].forEach(function(f){
+        var el=document.querySelector('[data-p="'+i+'"][data-f="'+f+'"]');
+        if(el) el.value=state["p"+i+"_"+f]||"";
+      });
+      updateDayHints(i);
+    }
+    refreshCalcLabels();
+  }
+
+  /* ---------- MOTOR DE DECISÃO ---------- */
+  function classifyParcela(i, folhaYM){
+    var iniA=state["p"+i+"_iniA"], fimA=state["p"+i+"_fimA"];
+    var iniN=state["p"+i+"_iniN"], fimN=state["p"+i+"_fimN"];
+    if(!iniA && !iniN) return null; /* parcela vazia */
+
+    var changed = (iniA!==iniN)||(fimA!==fimN);
+    if(!changed) return {i:i,changed:false,rota:null};
+
+    var startYM = ym(iniA) || ym(iniN);
+    var rota, motivo;
+    if(startYM==null || folhaYM==null){
+      rota="ALT"; motivo="Sem folha/datas para posicionar; confira manualmente.";
+    } else if(startYM > folhaYM){
+      rota="ALT"; motivo="Parcela inicia em folha futura &rarr; alteração direta.";
+    } else if(startYM === folhaYM){
+      var dA=daysBetween(iniA,fimA), dN=daysBetween(iniN,fimN);
+      var mudaDias = (dA!=null && dN!=null && dA!==dN);
+      var jogaFuturo = (ym(iniN)!=null && ym(iniN) > folhaYM);
+      if(mudaDias || jogaFuturo){ rota="CANC"; motivo="Inicia no mês da folha em aberto e "+(mudaDias?"muda a qtd de dias":"")+(mudaDias&&jogaFuturo?" e ":"")+(jogaFuturo?"joga p/ folha futura":"")+" &rarr; cancelar e remarcar."; }
+      else { rota="ALT"; motivo="Inicia no mês da folha em aberto, só nova data no mesmo mês &rarr; alteração direta."; }
+    } else {
+      rota="HIST"; motivo="Parcela inicia em folha anterior (já quitada/no passado) &rarr; correção histórica.";
+    }
+    return {i:i,changed:true,rota:rota,motivo:motivo,startYM:startYM};
+  }
+
+  function analyze(){
+    var exercicio = parseInt(state.exercicio,10)||null;
+    var folhaYM = ymFromMonth(state.folha);
+    var existem = state.existem;
+    var afast = state.afast;
+
+    /* Programação tem prioridade absoluta */
+    if(existem==="nao"){
+      return {rota:"PROG", perParcela:[], acumulo:analiseAcumulo(exercicio,afast), addNote:true};
+    }
+
+    var per=[];
+    for(var i=1;i<=NPARC;i++){ var c=classifyParcela(i,folhaYM); if(c) per.push(c); }
+    var mudou = per.filter(function(x){return x.changed;});
+
+    /* rota geral = pior caso (HIST > CANC > ALT) */
+    var order={ALT:1,CANC:2,HIST:3};
+    var rota="ALT", worst=0;
+    mudou.forEach(function(x){ if(order[x.rota]>worst){worst=order[x.rota]; rota=x.rota;} });
+    if(mudou.length===0) rota=null;
+
+    /* data de liberação no Siape = 2 folhas após o último evento (maior fim, atual ou novo) */
+    var liberacao=null;
+    if(rota==="HIST"){
+      var lastYM=null;
+      mudou.forEach(function(x){
+        [state["p"+x.i+"_fimA"], state["p"+x.i+"_fimN"]].forEach(function(d){
+          var v=ym(d); if(v!=null && (lastYM==null || v>lastYM)) lastYM=v;
+        });
+      });
+      liberacao = addMonths(lastYM,2);
+    }
+
+    return {rota:rota, perParcela:per, acumulo:analiseAcumulo(exercicio,afast), liberacao:liberacao, addNote:true};
+  }
+
+  function analiseAcumulo(exercicio, afast){
+    if(!exercicio) return {is:false};
+    var hit=false, dets=[];
+    for(var i=1;i<=NPARC;i++){
+      var y=yearOf(state["p"+i+"_iniN"]) || yearOf(state["p"+i+"_iniA"]);
+      if(y && y>exercicio){ hit=true; dets.push(i); }
+    }
+    return {is:hit, parcelas:dets, blocked: hit && afast==="sim"};
+  }
+
+  /* ---------- RENDER DO DIAGNÓSTICO ---------- */
+  var ROTA_INFO = {
+    PROG:{cls:"v-prog",tag:"Programação",cmd:"&gt;CAIFFERIAS",titulo:"Programação de Férias",
+          desc:"Não há férias cadastradas para este exercício. Cadastre do zero na tela preta.",step:"st-prog",
+          nodes:["fx-start","c-start","fx-q1","e-nao","fx-prog"]},
+    ALT:{cls:"v-alt",tag:"Alteração",cmd:"CAPRFERIAS",titulo:"Alteração de Férias",
+          desc:"As parcelas alteradas iniciam em folha futura (ou no mês atual sem mudar dias). Faça a reprogramação direta no e-Siape.",step:"st-alt",
+          nodes:["fx-start","c-start","fx-q1","e-sim","fx-q2","e-fut","fx-alt-f"]},
+    CANC:{cls:"v-canc",tag:"Cancelamento",cmd:"&gt;CACAFERIAS",titulo:"Cancelamento + Remarcação",
+          desc:"A parcela inicia no mês da folha em aberto e você precisa mudar dias ou jogá-la para o futuro. Cancele e remarque pelo CAPRFERIAS.",step:"st-canc",
+          nodes:["fx-start","c-start","fx-q1","e-sim","fx-q2","e-mes","fx-q3","e-m-sim","fx-canc"]},
+    HIST:{cls:"v-hist",tag:"Histórica",cmd:"SUAP + Siape",titulo:"Alteração Histórica",
+          desc:"Uma ou mais parcelas iniciam em folha anterior (passado/quitadas). O Siape só libera 2 folhas após o último evento. Registre já no SUAP e aguarde a data futura para o CAPRFERIAS.",step:"st-hist",
+          nodes:["fx-start","c-start","fx-q1","e-sim","fx-q2","e-ant","fx-hist"]}
+  };
+
+  function renderDiag(res){
+    var host=$("diag");
+    if(!res.rota){
+      host.innerHTML='<div class="placeholder">Nenhuma alteração detectada nas parcelas. Preencha &ldquo;início/fim atual&rdquo; e &ldquo;início/fim novo&rdquo; com valores diferentes.</div>';
+      lightPath(null,res);
+      hlSteps(null);
+      return;
+    }
+    var info=ROTA_INFO[res.rota];
+    var html="";
+    html+='<div class="verdict '+info.cls+'">';
+    html+='<h3><span class="tag">'+info.tag+'</span> '+info.titulo+' <code class="cmd">'+info.cmd+'</code></h3>';
+    html+='<p>'+info.desc+'</p></div>';
+
+    /* Flags */
+    html+='<div class="flags">';
+
+    /* por parcela */
+    var mudou=res.perParcela.filter(function(x){return x.changed;});
+    if(mudou.length){
+      mudou.forEach(function(x){
+        var rmap={ALT:"Alteração",CANC:"Cancelamento",HIST:"Histórica"};
+        var cls = x.rota==="HIST"?"warn":(x.rota==="CANC"?"warn":"info");
+        html+='<div class="flag '+cls+'"><span class="ic">'+x.i+'&ordf;</span><span><b>'+rmap[x.rota]+'</b> &middot; '+x.motivo+'</span></div>';
+      });
+    }
+
+    /* acúmulo */
+    if(res.acumulo && res.acumulo.is){
+      if(res.acumulo.blocked){
+        html+='<div class="flag stop"><span class="ic">&#10007;</span><span><b>Acúmulo bloqueado.</b> Há parcela iniciando no ano seguinte ao exercício, mas houve licença capacitação/afastamento neste ano &mdash; acúmulo <b>não é permitido</b>. Reveja as datas com o servidor.</span></div>';
+      } else {
+        html+='<div class="flag warn"><span class="ic">&#9888;</span><span><b>Acúmulo de férias.</b> Parcela(s) '+res.acumulo.parcelas.join(", ")+' iniciam no ano seguinte ao exercício. O sistema pedirá justificativa (&ldquo;Acúmulo devido ao serviço...&rdquo;) + &ldquo;S&rdquo; em DESEJA CONTINUAR. Confirme afastamentos em SUAP.</span></div>';
+      }
+    }
+
+    /* adicional */
+    var docente = state.tipo==="docente";
+    html+='<div class="flag info"><span class="ic">&#128181;</span><span><b>Adicional de 1/3.</b> Devido só no 1&ordm; período. Cadastro intempestivo pode não pagar automático &mdash; confira em <code class="k">&gt;FPCLPAGTO</code>. Se faltar, lance por <code class="k">&gt;FPATMOVFIN</code> (rubrica '+(state.tipo==="contratado"?"00750":"00220")+', '+(docente?"&divide; 2 &mdash; docente":"&divide; 3")+').</span></div>';
+
+    if(res.rota==="HIST"){
+      html+='<div class="flag warn"><span class="ic">&#9888;</span><span><b>Registrar no SUAP agora.</b> O extrator não traz alteração histórica/interrupção: edite em Listagem de Férias, <b>desmarque &ldquo;Atualizar pelo Extrator?&rdquo;</b> e salve.</span></div>';
+      if(res.liberacao){
+        html+='<div class="flag info"><span class="ic">&#128197;</span><span><b>Prazo no Siape.</b> O <code class="k">CAPRFERIAS</code> para efetivar a alteração histórica deve liberar a partir de ~<b>'+res.liberacao+'</b> (2 folhas após o último evento). Até lá, só o SUAP &mdash; não force o comando antes.</span></div>';
+      }
+    }
+
+    html+='</div>';
+    host.innerHTML=html;
+
+    lightPath(res.rota,res);
+    hlSteps(res);
+  }
+
+  /* ---------- ilumina o fluxograma ---------- */
+  var ALL_NODES=["fx-start","c-start","fx-q1","e-nao","fx-prog","e-sim","fx-q2","e-fut","fx-alt-f","e-mes","fx-q3","e-m-nao","fx-alt-m","e-m-sim","fx-canc","e-ant","fx-hist","c-fim","fx-add"];
+  function lightPath(rota,res){
+    ALL_NODES.forEach(function(id){ var el=$(id); if(el){ el.classList.remove("on"); el.classList.add("dim"); } });
+    if(!rota){ ALL_NODES.forEach(function(id){var el=$(id); if(el) el.classList.remove("dim");}); return; }
+    var path=ROTA_INFO[rota].nodes.slice();
+    path.push("c-fim","fx-add"); /* rodapé do adicional sempre */
+    /* se há mistura de rotas por parcela, acende também os nós dessas rotas */
+    (res.perParcela||[]).forEach(function(x){
+      if(x.changed && ROTA_INFO[x.rota]) ROTA_INFO[x.rota].nodes.forEach(function(n){ if(path.indexOf(n)<0) path.push(n); });
+    });
+    path.forEach(function(id){ var el=$(id); if(el){ el.classList.add("on"); el.classList.remove("dim"); } });
+  }
+
+  /* ---------- destaca passo a passo ---------- */
+  function hlSteps(res){
+    ["st-prog","st-alt","st-canc","st-hist","st-int","st-add"].forEach(function(id){
+      var d=$(id); d.classList.remove("hl"); d.open=false; d.removeAttribute("data-print");
+    });
+    if(!res||!res.rota) return;
+    var opens=[ROTA_INFO[res.rota].step];
+    (res.perParcela||[]).forEach(function(x){ if(x.changed && ROTA_INFO[x.rota]) opens.push(ROTA_INFO[x.rota].step); });
+    opens.push("st-add");
+    opens.forEach(function(id){ var d=$(id); if(d){ d.classList.add("hl"); d.open=true; d.setAttribute("data-print","open"); } });
+  }
+
+  /* ---------- calculadora do adicional ---------- */
+  function refreshCalcLabels(){
+    var docente = state.tipo==="docente";
+    $("cDiv").textContent = docente?"2":"3";
+    $("cDivWhy").textContent = docente?"(1/2 — 45 dias)":"(1/3 — 30 dias)";
+    $("lblIQ").textContent = docente?"Base 2 (RT)":"Base 2 (IQ)";
+    $("add-rub").textContent = state.tipo==="contratado"?"00750":"00220";
+    calcAdd();
+  }
+  function calcAdd(){
+    var vb=parseFloat($("cVB").value)||0, iq=parseFloat($("cIQ").value)||0, cd=parseFloat($("cCD").value)||0;
+    var div = state.tipo==="docente"?2:3;
+    $("cOut").textContent = money((vb+iq+cd)/div);
+  }
+  ["cVB","cIQ","cCD"].forEach(function(id){ $(id).addEventListener("input", calcAdd); });
+
+  /* ---------- exemplo (Rubens) ---------- */
+  function loadExemplo(){
+    state = {
+      matricula:"2163216", nome:"Rubens Pantano Filho", exercicio:"2025",
+      tipo:"docente", existem:"sim", afast:"nao",
+      folha: nowMonth(),
+      p1_iniA:"", p1_fimA:"", p1_iniN:"", p1_fimN:"",
+      p2_iniA:"2026-07-13", p2_fimA:"2026-07-27", p2_iniN:"2026-07-13", p2_fimN:"2026-07-20",
+      p3_iniA:"2026-07-21", p3_fimA:"2026-07-27", p3_iniN:"2026-12-16", p3_fimN:"2026-12-22"
+    };
+    applyState(); save();
+    doAnalyze();
+  }
+  function nowMonth(){
+    var d=new Date(); var m=(d.getMonth()+1); return d.getFullYear()+"-"+(m<10?"0":"")+m;
+  }
+  function limpar(){
+    state={}; try{localStorage.removeItem(STORE_KEY);}catch(e){}
+    ["matricula","nome","exercicio","folha","cVB","cIQ","cCD"].forEach(function(id){$(id).value="";});
+    setSeg("tipo",null); setSeg("existem",null); setSeg("afast",null);
+    for(var i=1;i<=NPARC;i++){ ["iniA","fimA","iniN","fimN"].forEach(function(f){var el=document.querySelector('[data-p="'+i+'"][data-f="'+f+'"]'); if(el) el.value="";}); updateDayHints(i); }
+    $("diag").innerHTML='<div class="placeholder">Preencha as parcelas e clique em <b>Analisar e gerar fluxo</b>.</div>';
+    lightPath(null,{}); hlSteps(null); refreshCalcLabels();
+  }
+
+  function doAnalyze(){ renderDiag(analyze()); }
+
+  /* ---------- init ---------- */
+  buildParcelas();
+  bindSeg("tipo","tipo"); bindSeg("existem","existem"); bindSeg("afast","afast");
+  ["matricula","nome","exercicio","folha"].forEach(function(id){
+    $(id).addEventListener("input", function(){ state[id]=$(id).value; save(); });
+  });
+  $("btnDiag").addEventListener("click", doAnalyze);
+  $("btnExemplo").addEventListener("click", loadExemplo);
+  $("btnLimpar").addEventListener("click", limpar);
+  $("btnPrint").addEventListener("click", function(){ window.print(); });
+
+  load();
+  if(!state.folha) state.folha=nowMonth();
+  applyState();
+  if(state.matricula||state.p2_iniA){ doAnalyze(); }
+})();
+</script>
+</body>
+</html>
